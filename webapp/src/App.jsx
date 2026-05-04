@@ -11,6 +11,7 @@ import ProjectSystem from './pages/ProjectSystem';
 import JobsInterviews from './pages/JobsInterviews';
 import AIChatAssistant from './components/AIChatAssistant';
 import { AppProvider, useAppContext } from './context/AppContext';
+import Spline3D from './components/Spline3D';
 
 const Navigation = () => {
   const location = useLocation();
@@ -127,12 +128,27 @@ const MainLayout = () => {
   // Hide sidebar during onboarding flow
   const hiddenRoutes = ['/', '/signup', '/assessment', '/mentorship'];
   const hideSidebar = hiddenRoutes.includes(location.pathname);
+  
+  const showGlobalSpline = !['/', '/signup'].includes(location.pathname);
 
   return (
-    <div className="page-wrapper" style={{ display: 'flex' }}>
-      <div className="bg-glow-1"></div>
-      <div className="bg-glow-2"></div>
-      <div className="bg-glow-3"></div>
+    <div className="page-wrapper" style={{ display: 'flex', position: 'relative', zIndex: 1 }}>
+      {showGlobalSpline && (
+        <>
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -2, pointerEvents: 'auto' }}>
+            <Spline3D scene="https://prod.spline.design/vrCrzAatwcSn1sBK/scene.splinecode" />
+          </div>
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1, pointerEvents: 'none', background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(3px)' }}></div>
+        </>
+      )}
+
+      {!showGlobalSpline && (
+        <>
+          <div className="bg-glow-1"></div>
+          <div className="bg-glow-2"></div>
+          <div className="bg-glow-3"></div>
+        </>
+      )}
       
       {!hideSidebar && <Navigation />}
       

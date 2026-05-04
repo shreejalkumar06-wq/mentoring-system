@@ -39,6 +39,16 @@ body {
   overflow-x: hidden;
 }
 
+/* Allow pointer events to pass through to the 3D Spline background */
+.page-wrapper, main, .container {
+  pointer-events: none;
+}
+
+/* Re-enable pointer events for interactive elements and content blocks */
+nav, .glass-panel, .glass-card, .btn, input, select, textarea, a, button, h1, h2, h3, h4, p, span, .badge, svg, img {
+  pointer-events: auto;
+}
+
 /* Glassmorphism Utilities */
 .glass-panel {
   background: rgba(255, 255, 255, 0.95);
@@ -50,7 +60,9 @@ body {
 }
 
 .glass-card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--border-radius-md);
   padding: 24px;
