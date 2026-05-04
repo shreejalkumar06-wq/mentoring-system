@@ -102,42 +102,42 @@ const Home = () => {
       </motion.div>
 
       <div style={{ width: '100%', maxWidth: '1200px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '40px', marginBottom: '4rem', flexDirection: 'row', flexWrap: 'wrap' }}>
-          
-          <div style={{ flex: '1', minWidth: '300px', textAlign: 'left' }}>
-            <motion.div variants={itemVariants} style={{ marginBottom: '24px' }}>
-              <span className="badge badge-primary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>
-                Your Personal Career Mentor
-              </span>
-            </motion.div>
-            
-            <motion.h1 variants={itemVariants} style={{ fontSize: '4rem', marginBottom: '1.5rem', lineHeight: '1.1' }}>
-              Bridge the Gap Between <br/> <span className="text-gradient">Learning & Earning</span>
-            </motion.h1>
-            
-            <motion.p variants={itemVariants} className="text-muted" style={{ fontSize: '1.1rem', marginBottom: '3rem', maxWidth: '600px' }}>
-              This platform helps you understand exactly where you stand. By sharing your current qualifications and goals, we generate a personalized roadmap and provide expert mentorship to guide you to your dream career. No intimidating coding tests—just clear, actionable guidance.
-            </motion.p>
-            
-            <motion.div variants={itemVariants} style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start' }}>
-              <Link to="/signup" style={{ textDecoration: 'none' }}>
-                <motion.button 
-                  className="btn btn-primary" 
-                  style={{ padding: '16px 40px', fontSize: '1.2rem', borderRadius: '30px' }}
-                  whileHover={{ scale: 1.05, boxShadow: '0 10px 25px rgba(59, 130, 246, 0.5)' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Start Your Journey <ArrowRight size={20} />
-                </motion.button>
-              </Link>
-            </motion.div>
-          </div>
+        {/* Full Page 3D Model Section */}
+        <motion.div 
+          variants={itemVariants} 
+          style={{ width: '100%', height: '85vh', position: 'relative', marginBottom: '4rem' }}
+        >
+          <Spline3D scene="https://prod.spline.design/6SGiRaIfL7mkmyVu/scene.splinecode" />
+        </motion.div>
 
-          <motion.div 
-            variants={itemVariants} 
-            style={{ flex: '1', minWidth: '300px', height: '500px', position: 'relative' }}
-          >
-            <Spline3D scene="https://prod.spline.design/6SGiRaIfL7mkmyVu/scene.splinecode" />
+        {/* Written Part */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '6rem' }}>
+          
+          <motion.div variants={itemVariants} style={{ marginBottom: '24px' }}>
+            <span className="badge badge-primary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>
+              Your Personal Career Mentor
+            </span>
+          </motion.div>
+          
+          <motion.h1 variants={itemVariants} style={{ fontSize: '4.5rem', marginBottom: '1.5rem', lineHeight: '1.1' }}>
+            Bridge the Gap Between <br/> <span className="text-gradient">Learning & Earning</span>
+          </motion.h1>
+          
+          <motion.p variants={itemVariants} className="text-muted" style={{ fontSize: '1.2rem', marginBottom: '3rem', maxWidth: '800px', margin: '0 auto 3rem auto' }}>
+            This platform helps you understand exactly where you stand. By sharing your current qualifications and goals, we generate a personalized roadmap and provide expert mentorship to guide you to your dream career. No intimidating coding tests—just clear, actionable guidance.
+          </motion.p>
+          
+          <motion.div variants={itemVariants}>
+            <Link to="/signup" style={{ textDecoration: 'none' }}>
+              <motion.button 
+                className="btn btn-primary" 
+                style={{ padding: '16px 40px', fontSize: '1.2rem', borderRadius: '30px' }}
+                whileHover={{ scale: 1.05, boxShadow: '0 10px 25px rgba(59, 130, 246, 0.5)' }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Start Your Journey <ArrowRight size={20} />
+              </motion.button>
+            </Link>
           </motion.div>
         </div>
 
