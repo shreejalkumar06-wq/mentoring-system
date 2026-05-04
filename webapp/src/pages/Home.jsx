@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Target, Compass, UserCheck, Briefcase } from 'lucide-react';
+import Spline3D from '../components/Spline3D';
 
 const Home = () => {
   const [activeFeature, setActiveFeature] = useState(null);
@@ -83,6 +84,20 @@ const Home = () => {
 
   return (
     <>
+      {/* Full Page 3D Model Section - Fixed Background */}
+      <div 
+        style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: '100vw', 
+          height: '100vh', 
+          zIndex: 0,
+          pointerEvents: 'auto'
+        }}
+      >
+        <Spline3D scene="https://prod.spline.design/6SGiRaIfL7mkmyVu/scene.splinecode" />
+      </div>
 
       <motion.div 
         className="container flex-center" 

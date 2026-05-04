@@ -39,7 +39,6 @@ body {
   overflow-x: hidden;
 }
 
-
 /* Glassmorphism Utilities */
 .glass-panel {
   background: rgba(255, 255, 255, 0.95);
@@ -51,9 +50,7 @@ body {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--border-radius-md);
   padding: 24px;

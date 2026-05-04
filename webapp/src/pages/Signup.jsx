@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { api } from '../lib/api';
+import Spline3D from '../components/Spline3D';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -55,6 +56,20 @@ const Signup = () => {
 
   return (
     <>
+      <div 
+        style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: '100vw', 
+          height: '100vh', 
+          zIndex: 0,
+          pointerEvents: 'auto'
+        }}
+      >
+        <Spline3D scene="https://prod.spline.design/x8cqzwZl1E9AmRbz/scene.splinecode" />
+      </div>
+
       <motion.div 
         className="container flex-center" 
         style={{ minHeight: '100vh', paddingBottom: '100px', position: 'relative', zIndex: 1, pointerEvents: 'none' }}
