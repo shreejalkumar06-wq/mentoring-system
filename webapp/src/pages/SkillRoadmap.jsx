@@ -17,6 +17,9 @@ const SkillRoadmap = () => {
   const [testCode, setTestCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userLevel, setUserLevel] = useState(0);
+  const [incorrectAnswers, setIncorrectAnswers] = useState([]);
+  const [identifiedGaps, setIdentifiedGaps] = useState([]);
+  const [openTdbQuestions, setOpenTdbQuestions] = useState([]);
 
   useEffect(() => {
     // API mock removed
@@ -27,32 +30,50 @@ const SkillRoadmap = () => {
   const getOverallQuestions = (r) => {
     const questions = {
       'Frontend Developer': [
-        { q: 'What does CSS stand for?', options: ['Computer Style Sheets', 'Cascading Style Sheets', 'Creative Style Sheets', 'Colorful Style Sheets'], ans: 1 },
-        { q: 'Which is a React hook?', options: ['useFetch', 'useRender', 'useState', 'useData'], ans: 2 },
-        { q: 'What does HTML describe?', options: ['Styling', 'Structure', 'Logic', 'Database'], ans: 1 }
+        { q: 'In React, what is the primary purpose of the useCallback hook?', options: ['To fetch data from an API', 'To memoize a callback function and prevent unnecessary re-renders', 'To manage global state', 'To directly mutate the DOM'], ans: 1, skill: 'Advanced React Hooks' },
+        { q: 'Which CSS property is used to change the stacking order of elements?', options: ['z-index', 'position', 'display', 'float'], ans: 0, skill: 'CSS Fundamentals' },
+        { q: 'What is a closure in JavaScript?', options: ['A function that is executed immediately', 'A method to close a browser window', 'A combination of a function bundled together with references to its surrounding state', 'A way to style hidden elements'], ans: 2, skill: 'JavaScript Core Concepts' }
       ],
       'Backend Developer': [
-        { q: 'What is Node.js?', options: ['A web browser', 'A JS runtime', 'A database', 'A styling framework'], ans: 1 },
-        { q: 'Which is a NoSQL database?', options: ['PostgreSQL', 'MySQL', 'MongoDB', 'Oracle'], ans: 2 },
-        { q: 'What does API stand for?', options: ['Application Programming Interface', 'Apple Programming Interface', 'Application Process Integration', 'Advanced Programming Interface'], ans: 0 }
+        { q: 'In Node.js, how does the event loop handle asynchronous operations?', options: ['By creating a new thread for each request', 'By offloading operations to the system kernel whenever possible', 'By blocking the main thread until the operation completes', 'By executing all asynchronous code synchronously'], ans: 1, skill: 'Node.js Event Loop' },
+        { q: 'What is a primary characteristic of a RESTful API?', options: ['It maintains client state on the server between requests', 'It uses XML exclusively for data transfer', 'It is stateless, meaning each request contains all necessary information', 'It requires WebSockets for communication'], ans: 2, skill: 'RESTful API Design' },
+        { q: 'Why might you use a database index?', options: ['To encrypt sensitive data', 'To automatically backup the database', 'To improve the speed of data retrieval operations', 'To compress the database size'], ans: 2, skill: 'Database Indexing' }
       ],
       'Data Scientist': [
-        { q: 'Which language is most popular for Data Science?', options: ['Java', 'Python', 'C++', 'Ruby'], ans: 1 },
-        { q: 'What is Pandas?', options: ['An animal', 'A data analysis library', 'A web framework', 'A database'], ans: 1 },
-        { q: 'What does ML stand for?', options: ['Machine Logic', 'Making Lists', 'Machine Learning', 'Model Learning'], ans: 2 }
+        { q: 'In machine learning, what is the purpose of cross-validation?', options: ['To increase the training data size', 'To test the model\'s ability to predict new data that was not used in estimating it', 'To speed up the training process', 'To convert categorical variables into numerical values'], ans: 1, skill: 'Machine Learning Basics' },
+        { q: 'Which Pandas method is commonly used to handle missing values by filling them?', options: ['dropna()', 'fillna()', 'replace()', 'isnull()'], ans: 1, skill: 'Pandas Data Analysis' },
+        { q: 'What does a P-value indicate in hypothesis testing?', options: ['The probability of the null hypothesis being true', 'The probability of observing the data given the null hypothesis is true', 'The accuracy of the model', 'The variance of the sample'], ans: 1, skill: 'Statistical Analysis' }
       ],
       'Full Stack Developer': [
-        { q: 'What connects Frontend and Backend?', options: ['CSS', 'API', 'HTML', 'Database'], ans: 1 },
-        { q: 'Which of these is a full stack framework?', options: ['Next.js', 'React', 'Express', 'Tailwind'], ans: 0 },
-        { q: 'Where is user data typically permanently stored?', options: ['Browser Memory', 'Redux', 'Database', 'Local Storage'], ans: 2 }
+        { q: 'What is the primary advantage of using GraphQL over traditional REST APIs?', options: ['It is always faster', 'It automatically caches all requests', 'It prevents over-fetching and under-fetching of data by allowing the client to request exactly what it needs', 'It does not require a database'], ans: 2, skill: 'GraphQL Fundamentals' },
+        { q: 'In a CI/CD pipeline, what does Continuous Integration primarily refer to?', options: ['Automatically deploying to production', 'Frequently committing code to a shared repository where it is automatically built and tested', 'Writing documentation for new features', 'Manually reviewing all pull requests'], ans: 1, skill: 'CI/CD Pipelines' },
+        { q: 'What is the primary function of a Docker container?', options: ['To secure passwords', 'To act as a virtual machine with a full guest OS', 'To package an application and its dependencies into a standardized unit for software development', 'To host a database globally'], ans: 2, skill: 'Docker Containers' }
       ],
       "Don't know": [
-        { q: 'What is a browser?', options: ['A search engine', 'Software to view web pages', 'A type of computer', 'An internet provider'], ans: 1 },
-        { q: 'What does a Frontend Developer do?', options: ['Builds servers', 'Designs databases', 'Builds user interfaces', 'Analyzes data'], ans: 2 },
-        { q: 'What does a Data Scientist do?', options: ['Builds websites', 'Analyzes complex data', 'Fixes computers', 'Writes CSS'], ans: 1 }
+        { q: 'What is the primary function of HTML in web development?', options: ['To style the webpage', 'To add interactivity', 'To define the structure and content of the webpage', 'To manage the database'], ans: 2, skill: 'Web Fundamentals' },
+        { q: 'Which of the following is a backend programming language?', options: ['CSS', 'HTML', 'Python', 'React'], ans: 2, skill: 'Backend Fundamentals' },
+        { q: 'What is a database?', options: ['A styling framework', 'An organized collection of structured information, or data', 'A type of web browser', 'A graphic design tool'], ans: 1, skill: 'Data Fundamentals' }
       ]
     };
     return questions[r] || questions["Don't know"];
+  };
+
+  const getProfessionalQuestions = (r) => {
+    const questions = {
+      'Frontend Developer': [
+        { q: 'When optimizing Web Vitals, which metric does Server-Side Rendering (SSR) typically improve the most?', options: ['Cumulative Layout Shift (CLS)', 'First Contentful Paint (FCP)', 'Interaction to Next Paint (INP)', 'Time to First Byte (TTFB)'], ans: 1, skill: 'Web Performance' },
+        { q: 'In a micro-frontend architecture, what is a common strategy for sharing state between loosely coupled applications?', options: ['Using a single Redux store', 'Custom browser events or a shared pub/sub event bus', 'Passing props through the DOM hierarchy', 'Using LocalStorage exclusively'], ans: 1, skill: 'System Architecture' },
+      ],
+      'Backend Developer': [
+        { q: 'Which caching strategy is most appropriate for high-read, low-write data to minimize database hits?', options: ['Write-through cache', 'Cache-aside (Lazy loading)', 'Write-behind cache', 'No caching'], ans: 1, skill: 'System Architecture' },
+        { q: 'In distributed systems, what does the CAP theorem state you must trade off during a network partition?', options: ['Consistency or Availability', 'Concurrency or Performance', 'Capacity or Authentication', 'Cost or Agility'], ans: 0, skill: 'Distributed Systems' }
+      ]
+    };
+    const fallback = [
+      { q: 'What is the most critical aspect of deploying a production-ready application?', options: ['Choosing the coolest framework', 'Implementing comprehensive monitoring and error tracking', 'Making sure the code is completely undocumented', 'Using only cutting-edge beta libraries'], ans: 1, skill: 'Production Readiness' },
+      { q: 'In an Agile workflow, what is the primary purpose of a retrospective?', options: ['To blame team members for failures', 'To plan the next sprint', 'To reflect on the past sprint and identify areas for process improvement', 'To demonstrate the product to stakeholders'], ans: 2, skill: 'Agile Methodologies' }
+    ];
+    return questions[r] || fallback;
   };
 
   const getSkillChallenge = (skillTitle) => {
@@ -203,6 +224,58 @@ const SkillRoadmap = () => {
     return projectsDB[role] || projectsDB["Don't know"];
   };
 
+  const getDetailedRoadmap = (r) => {
+    const roadmaps = {
+      'Frontend Developer': {
+        niche: 'Creative WebGL & 3D Web Architect',
+        phases: [
+          { level: 0, title: 'Web Fundamentals', skills: ['HTML5', 'CSS3', 'Vanilla JavaScript'] },
+          { level: 1, title: 'Modern UI Engineering', skills: ['React', 'Tailwind CSS', 'State Management'] },
+          { level: 2, title: 'Performance & Architecture', skills: ['Next.js SSR', 'Web Vitals Optimization', 'Micro-frontends'] },
+          { level: 3, title: 'Creative WebGL & 3D Web Architect', skills: ['Three.js', 'WebGL Shaders', 'Advanced Animations', 'GLSL'] }
+        ]
+      },
+      'Backend Developer': {
+        niche: 'High-Concurrency Distributed Systems Architect',
+        phases: [
+          { level: 0, title: 'Server Fundamentals', skills: ['Node.js/Python', 'REST APIs', 'Basic SQL'] },
+          { level: 1, title: 'Advanced Database & Caching', skills: ['PostgreSQL Tuning', 'Redis', 'GraphQL'] },
+          { level: 2, title: 'Cloud & Infrastructure', skills: ['Docker', 'Kubernetes', 'CI/CD Pipelines'] },
+          { level: 3, title: 'High-Concurrency Distributed Systems Architect', skills: ['Event-driven Architecture', 'Kafka/RabbitMQ', 'System Design'] }
+        ]
+      },
+      'Data Scientist': {
+        niche: 'Generative AI & LLM Specialist',
+        phases: [
+          { level: 0, title: 'Data Analysis Basics', skills: ['Python', 'Pandas', 'Matplotlib'] },
+          { level: 1, title: 'Machine Learning Core', skills: ['Scikit-Learn', 'Supervised/Unsupervised Learning', 'SQL'] },
+          { level: 2, title: 'Deep Learning', skills: ['PyTorch/TensorFlow', 'Neural Networks', 'NLP'] },
+          { level: 3, title: 'Generative AI & LLM Specialist', skills: ['Transformer Architectures', 'LLM Fine-tuning', 'RAG Pipelines'] }
+        ]
+      },
+      'Full Stack Developer': {
+        niche: 'Serverless Cloud Solutions Architect',
+        phases: [
+          { level: 0, title: 'Full Stack Basics', skills: ['MERN/PERN Stack', 'CRUD Operations', 'Auth'] },
+          { level: 1, title: 'Advanced Full Stack', skills: ['Next.js', 'GraphQL', 'Prisma/ORMs'] },
+          { level: 2, title: 'Cloud-Native Deployment', skills: ['AWS/GCP', 'Docker', 'Serverless Functions'] },
+          { level: 3, title: 'Serverless Cloud Solutions Architect', skills: ['Edge Computing', 'Microservices', 'Infrastructure as Code'] }
+        ]
+      },
+      "Don't know": {
+         niche: 'General Tech Specialist',
+         phases: [
+           { level: 0, title: 'Tech Discovery', skills: ['Basic Web', 'Logic Building', 'Problem Solving'] },
+           { level: 1, title: 'Core Programming', skills: ['Python/JS', 'Data Structures', 'Version Control'] },
+           { level: 2, title: 'Domain Specialization', skills: ['Frontend/Backend/Data', 'Frameworks'] },
+           { level: 3, title: 'General Tech Specialist', skills: ['System Architecture', 'Cross-domain Integration', 'Tech Leadership'] }
+         ]
+      }
+    };
+    
+    return roadmaps[r] || roadmaps["Don't know"];
+  };
+
   const skills = roadmap?.phases?.map((phase) => ({
     title: `${phase.level}: ${phase.focus}`,
     desc: phase.skills?.join(', ') || '',
@@ -229,12 +302,64 @@ const SkillRoadmap = () => {
     }
   };
 
+  const getCurrentQuestions = () => {
+    if (activeSkill === 'opentdb') return openTdbQuestions;
+    if (activeSkill === 'professional') return getProfessionalQuestions(role);
+    return getOverallQuestions(role);
+  };
+
+  const fetchOpenTDB = async () => {
+    setActiveSkill('opentdb');
+    setTestPhase('opentdb-loading');
+    try {
+      // Category 18 = Science: Computers
+      const res = await fetch('https://opentdb.com/api.php?amount=5&category=18&type=multiple');
+      const data = await res.json();
+      if (data.results && data.results.length > 0) {
+        const formatted = data.results.map(q => {
+          const options = [...q.incorrect_answers, q.correct_answer];
+          options.sort(() => Math.random() - 0.5); // simple shuffle
+          const ansIndex = options.indexOf(q.correct_answer);
+          
+          // Simple HTML decoder for entities like &quot;
+          const decode = (str) => {
+            const txt = document.createElement('textarea');
+            txt.innerHTML = str;
+            return txt.value;
+          };
+
+          return {
+            q: decode(q.question),
+            options: options.map(o => decode(o)),
+            ans: ansIndex,
+            skill: 'General Computer Science'
+          };
+        });
+        setOpenTdbQuestions(formatted);
+        setOverallQuestionIndex(0);
+        setOverallScore(0);
+        setTestPhase('overall-mcq');
+      } else {
+        alert("Could not load OpenTDB questions.");
+        setTestPhase('choose');
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error connecting to Open Trivia Database.");
+      setTestPhase('choose');
+    }
+  };
+
   const handleOverallMCQAnswer = (idx) => {
-    const questionsList = getOverallQuestions(role);
-    let newScore = overallScore;
-    if (idx === questionsList[overallQuestionIndex].ans) {
-      newScore = overallScore + 1;
-      setOverallScore(newScore);
+    const questionsList = getCurrentQuestions();
+    const currentQuestion = questionsList[overallQuestionIndex];
+    
+    if (idx === currentQuestion.ans) {
+      setOverallScore(overallScore + 1);
+    } else {
+      if (currentQuestion.skill) {
+        setIncorrectAnswers(prev => [...prev, currentQuestion.skill]);
+      }
     }
     
     if (overallQuestionIndex < questionsList.length - 1) {
@@ -247,11 +372,20 @@ const SkillRoadmap = () => {
   const handleSubmitAssessment = () => {
     if (!testCode.trim()) return;
     setIsSubmitting(true);
+    
+    // [API INTEGRATION POINT]: This is where we would use an API to evaluate the code snippet.
+    // Example: const result = await api.post('/api/evaluate-code', { code: testCode, role: role });
+    
     // Simulate grading delay
     setTimeout(() => {
       setIsSubmitting(false);
       setTestPhase('result');
       setUserLevel(prev => prev + 1);
+      
+      // Calculate final gaps based on MCQ and potential code evaluation.
+      // We use the incorrect MCQ answers as our identified skill gaps.
+      setIdentifiedGaps([...new Set(incorrectAnswers)]);
+      
     }, 1500);
   };
 
@@ -263,7 +397,74 @@ const SkillRoadmap = () => {
       setIsSubmitting(false);
       setOverallQuestionIndex(0);
       setOverallScore(0);
+      setIncorrectAnswers([]);
     }, 500);
+  };
+
+  const getIndustryTrends = (role) => {
+    // [API INTEGRATION POINT]: Industry trends data would be fetched from a live API.
+    // Example: const trends = await api.get(`/api/trends?role=${role}`);
+    
+    const trendsDB = {
+      'Frontend Developer': [
+        { trend: 'Server-Side Rendering & Next.js 14', impact: 'High', description: 'Shifting towards server components for improved performance and SEO.' },
+        { trend: 'TypeScript Adoption', impact: 'Critical', description: 'Industry standard for large-scale applications; improves code maintainability.' },
+        { trend: 'Micro-Frontends', impact: 'Medium', description: 'Splitting frontend monoliths into manageable, independently deployable pieces.' }
+      ],
+      'Backend Developer': [
+        { trend: 'Serverless Architecture', impact: 'High', description: 'Using AWS Lambda or Vercel functions to reduce infrastructure management.' },
+        { trend: 'GraphQL over REST', impact: 'Medium', description: 'Increasing preference for client-driven data fetching.' },
+        { trend: 'Event-Driven Microservices', impact: 'High', description: 'Using Kafka or RabbitMQ for scalable, decoupled services.' }
+      ],
+      'Full Stack Developer': [
+        { trend: 'Full-Stack Frameworks (Next.js, Remix)', impact: 'High', description: 'Blurring the line between frontend and backend boundaries.' },
+        { trend: 'AI-Augmented Development', impact: 'Critical', description: 'Integrating LLMs (like GPT-4) into applications.' },
+        { trend: 'Edge Computing', impact: 'Medium', description: 'Running code closer to the user to reduce latency.' }
+      ],
+      'Data Scientist': [
+        { trend: 'Large Language Models (LLMs)', impact: 'Critical', description: 'Fine-tuning and deploying foundational generative models.' },
+        { trend: 'MLOps', impact: 'High', description: 'Standardizing machine learning lifecycle, continuous training, and deployments.' },
+        { trend: 'Explainable AI (XAI)', impact: 'Medium', description: 'Ensuring model decisions are transparent and understandable by humans.' }
+      ],
+      "Don't know": [
+        { trend: 'AI & Automation', impact: 'Critical', description: 'Understanding how AI tools can enhance productivity across all tech roles.' },
+        { trend: 'Cloud Native Technologies', impact: 'High', description: 'Applications are increasingly built natively for cloud environments.' }
+      ]
+    };
+    
+    return trendsDB[role] || trendsDB["Don't know"];
+  };
+
+  const getMockInterviewQuestions = (gaps) => {
+    // [API INTEGRATION POINT]: AI-generated interview scenarios would be fetched dynamically based on gaps.
+    // Example: const interviewQuestions = await api.post('/api/generate-interview', { gaps: gaps });
+    
+    if (!gaps || gaps.length === 0) {
+      return [
+        { q: "Tell me about a challenging project you've worked on recently.", hint: "Focus on your problem-solving process and the architecture." },
+        { q: "How do you keep up with the latest industry trends?", hint: "Mention specific blogs, courses, or communities you follow actively." }
+      ];
+    }
+    
+    const mockDB = {
+      'Advanced React Hooks': { q: "Can you explain a scenario where you would choose useCallback over useMemo?", hint: "Discuss function reference equality vs value memoization and re-renders." },
+      'CSS Fundamentals': { q: "How would you implement a responsive layout without using a framework like Tailwind?", hint: "Discuss CSS Grid properties and media queries." },
+      'JavaScript Core Concepts': { q: "Explain event delegation in JavaScript and why it is useful.", hint: "Discuss event bubbling and memory performance benefits." },
+      'Node.js Event Loop': { q: "Can you describe the different phases of the Node.js event loop?", hint: "Mention timers, pending callbacks, poll, check, and close callbacks." },
+      'RESTful API Design': { q: "How do you handle versioning in a RESTful API?", hint: "Discuss URI versioning vs Header versioning pros and cons." },
+      'Database Indexing': { q: "What are the trade-offs of adding too many indexes to a database table?", hint: "Discuss read vs write performance impacts." },
+      'Machine Learning Basics': { q: "Can you explain the difference between overfitting and underfitting?", hint: "Discuss bias-variance tradeoff and validation accuracy." },
+      'Pandas Data Analysis': { q: "How do you handle large datasets in Pandas that don't fit into memory?", hint: "Mention chunking, optimized dtypes, or Dask." },
+      'Statistical Analysis': { q: "How would you explain a p-value to a non-technical stakeholder?", hint: "Focus on practical significance vs statistical terminology." },
+      'GraphQL Fundamentals': { q: "How do you handle N+1 query problems in GraphQL?", hint: "Discuss DataLoader and batching." },
+      'Docker Containers': { q: "What is the difference between an Image and a Container in Docker?", hint: "Discuss static templates vs running instances." },
+      'CI/CD Pipelines': { q: "How would you set up a basic CI pipeline for a Node.js application?", hint: "Mention GitHub Actions, installing dependencies, and running tests." },
+      'Web Fundamentals': { q: "What is the difference between block and inline elements?", hint: "Discuss document flow and dimensional properties." },
+      'Backend Fundamentals': { q: "Explain the difference between SQL and NoSQL databases.", hint: "Discuss structured vs unstructured data and horizontal scaling." },
+      'Data Fundamentals': { q: "What is normalization in a database?", hint: "Discuss reducing data redundancy." }
+    };
+    
+    return gaps.map(gap => mockDB[gap]).filter(Boolean);
   };
 
   return (
@@ -321,6 +522,147 @@ const SkillRoadmap = () => {
         >
           {userLevel > 0 ? <><CheckCircle size={20} /> Ranked Up!</> : <><Play size={20} /> Take Skill Test to Level Up</>}
         </button>
+      </motion.div>
+
+      {/* Detailed Path to Expertise */}
+      <motion.div variants={itemVariants} style={{ marginBottom: '3rem' }}>
+        <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Trophy size={24} color="var(--accent-secondary)" /> 
+          Detailed Path to Expertise
+        </h3>
+        
+        <div className="glass-panel" style={{ padding: '32px', position: 'relative' }}>
+          <p className="text-muted" style={{ marginBottom: '24px', fontSize: '1.05rem', lineHeight: '1.6' }}>
+            Based on your target of becoming a <strong>{role}</strong>, here is your specialized roadmap to reach the expert niche of <strong style={{ color: 'var(--accent-primary)' }}>{getDetailedRoadmap(role).niche}</strong>. Focus on mastering these skills at your current phase before moving to the next.
+          </p>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            {getDetailedRoadmap(role).phases.map((phase, index) => {
+              const isCurrent = userLevel === phase.level;
+              const isPast = userLevel > phase.level;
+              const isFuture = userLevel < phase.level;
+              const roadmapPhases = getDetailedRoadmap(role).phases;
+              
+              return (
+                <div key={index} style={{ display: 'flex', gap: '20px', position: 'relative' }}>
+                  {/* Timeline connector */}
+                  {index < roadmapPhases.length - 1 && (
+                     <div style={{ position: 'absolute', left: '15px', top: '30px', bottom: '-20px', width: '2px', background: isPast ? 'var(--success)' : 'rgba(255,255,255,0.1)', zIndex: 0 }} />
+                  )}
+                  
+                  {/* Timeline dot */}
+                  <div style={{ position: 'relative', zIndex: 1, marginTop: '4px' }}>
+                    <div style={{ 
+                      width: '32px', height: '32px', borderRadius: '50%', 
+                      background: isCurrent ? 'var(--accent-primary)' : isPast ? 'var(--success)' : 'rgba(255,255,255,0.05)',
+                      border: `2px solid ${isCurrent ? 'var(--accent-secondary)' : isPast ? 'var(--success)' : 'rgba(255,255,255,0.2)'}`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: isPast || isCurrent ? '#fff' : 'var(--text-muted)'
+                    }}>
+                      {isPast ? <CheckCircle size={16} /> : <span style={{ fontWeight: 'bold' }}>{phase.level}</span>}
+                    </div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div style={{ flex: 1, paddingBottom: '32px', opacity: isPast || isCurrent ? 1 : 0.6 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                      <h4 style={{ margin: 0, fontSize: '1.2rem', color: isCurrent ? 'var(--accent-primary)' : isFuture ? 'var(--text-muted)' : 'var(--text-main)' }}>
+                        {phase.title}
+                      </h4>
+                      {isCurrent && <span style={{ padding: '4px 10px', background: 'rgba(59,130,246,0.15)', color: 'var(--accent-primary)', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '500', border: '1px solid rgba(59,130,246,0.3)' }}>Current Level</span>}
+                      {isPast && <span style={{ padding: '4px 10px', background: 'rgba(34,197,94,0.15)', color: 'var(--success)', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '500', border: '1px solid rgba(34,197,94,0.3)' }}>Completed</span>}
+                      {phase.level === roadmapPhases[roadmapPhases.length - 1].level && (
+                         <span style={{ padding: '4px 10px', background: 'rgba(139,92,246,0.15)', color: '#a78bfa', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '500', border: '1px solid rgba(139,92,246,0.3)' }}>Expert Niche</span>
+                      )}
+                    </div>
+                    
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {phase.skills.map((skill, sIdx) => (
+                        <span key={sIdx} style={{ 
+                          padding: '6px 14px', 
+                          background: isPast ? 'rgba(34,197,94,0.08)' : isCurrent ? 'rgba(59,130,246,0.05)' : 'rgba(255,255,255,0.02)', 
+                          border: `1px solid ${isPast ? 'rgba(34,197,94,0.2)' : isCurrent ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.1)'}`, 
+                          borderRadius: '20px', 
+                          fontSize: '0.9rem',
+                          color: isPast ? 'var(--success)' : isCurrent ? 'var(--text-main)' : 'var(--text-muted)'
+                        }}>
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Industry Trends & Mock Interview Section */}
+      <motion.div variants={itemVariants} style={{ marginBottom: '3rem' }}>
+        <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Trophy size={24} color="var(--accent-primary)" /> 
+          Industry Trends & Targeted Mock Interview
+        </h3>
+        
+        {identifiedGaps.length > 0 ? (
+          <div style={{ marginBottom: '1.5rem', padding: '16px', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '8px', borderLeft: '4px solid var(--error)' }}>
+            <h4 style={{ margin: 0, color: 'var(--error)', marginBottom: '8px' }}>Identified Skill Gaps from Assessment</h4>
+            <p className="text-muted" style={{ margin: 0 }}>Based on your recent test, we noticed you could brush up on: <strong>{identifiedGaps.join(', ')}</strong></p>
+          </div>
+        ) : (
+          <div style={{ marginBottom: '1.5rem', padding: '16px', background: 'rgba(34, 197, 94, 0.05)', borderRadius: '8px', borderLeft: '4px solid var(--success)' }}>
+            <h4 style={{ margin: 0, color: 'var(--success)', marginBottom: '8px' }}>Assessment Status</h4>
+            <p className="text-muted" style={{ margin: 0 }}>Take the comprehensive assessment to identify your specific skill gaps and get targeted mock interview questions.</p>
+          </div>
+        )}
+
+        <div className="grid-cols-2">
+          {/* Trends Column */}
+          <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+               Current {role} Trends
+            </h4>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>
+              <em>[API INTEGRATION]: Live trends would be fetched here via <code>api.get('/industry-trends')</code></em>
+            </p>
+            {getIndustryTrends(role).map((trend, idx) => (
+              <div key={idx} style={{ padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <strong style={{ fontSize: '0.95rem' }}>{trend.trend}</strong>
+                  <span style={{ fontSize: '0.75rem', padding: '2px 8px', borderRadius: '12px', background: trend.impact === 'Critical' ? 'rgba(239,68,68,0.2)' : 'rgba(59,130,246,0.2)', color: trend.impact === 'Critical' ? '#fca5a5' : '#93c5fd' }}>{trend.impact}</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>{trend.description}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Mock Interview Column */}
+          <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+             <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+               Targeted Mock Interview
+            </h4>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>
+              <em>[API INTEGRATION]: AI questions would be fetched via <code>api.post('/generate-interview', &#123; gaps &#125;)</code></em>
+            </p>
+            {getMockInterviewQuestions(identifiedGaps).length > 0 ? getMockInterviewQuestions(identifiedGaps).map((q, idx) => (
+              <div key={idx} style={{ padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <p style={{ margin: '0 0 8px 0', fontSize: '0.95rem', fontWeight: '500' }}>Q: {q.q}</p>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--accent-secondary)' }}>💡 Hint: {q.hint}</p>
+              </div>
+            )) : (
+               <div style={{ padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                 <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)' }}>Take the assessment to generate questions targeting your weak points.</p>
+               </div>
+            )}
+            
+            <div style={{ marginTop: 'auto', paddingTop: '16px' }}>
+                <Link to="/jobs-interviews" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+                  Practice Full Mock Interview <ArrowRight size={16} />
+                </Link>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
       {/* Skills to Learn Section */}
@@ -394,6 +736,22 @@ const SkillRoadmap = () => {
                     Take Comprehensive Role Assessment
                   </button>
 
+                  <button 
+                    onClick={() => { setActiveSkill('professional'); setTestPhase('overall-mcq'); }}
+                    className="btn btn-primary"
+                    style={{ textAlign: 'center', padding: '16px', fontSize: '1.05rem', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#ffffff', border: 'none', marginBottom: '16px', boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)' }}
+                  >
+                    Take Professional Certification Test
+                  </button>
+
+                  <button 
+                    onClick={fetchOpenTDB}
+                    className="btn btn-primary"
+                    style={{ textAlign: 'center', padding: '16px', fontSize: '1.05rem', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', border: 'none', marginBottom: '16px', boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)' }}
+                  >
+                    Take Open Trivia Database Challenge (Live API)
+                  </button>
+
                   <h4 style={{ margin: '8px 0', color: '#64748b', fontSize: '0.9rem', textTransform: 'uppercase' }}>Or test an individual skill:</h4>
                   {skills.map(s => (
                     <button 
@@ -433,13 +791,19 @@ const SkillRoadmap = () => {
 
             {testPhase === 'overall-mcq' && (
               <>
-                <h3 style={{ marginTop: 0, marginBottom: '8px', fontSize: '1.4rem', color: '#0f172a' }}>Comprehensive Assessment</h3>
-                <p style={{ marginBottom: '24px', color: '#64748b' }}>Question {overallQuestionIndex + 1} of {getOverallQuestions(role).length}</p>
+                <h3 style={{ marginTop: 0, marginBottom: '8px', fontSize: '1.4rem', color: '#0f172a' }}>
+                  {activeSkill === 'opentdb' ? 'Open Trivia Challenge' : (activeSkill === 'professional' ? 'Professional Certification' : 'Comprehensive Assessment')}
+                </h3>
+                <p style={{ marginBottom: '24px', color: '#64748b' }}>
+                  Question {overallQuestionIndex + 1} of {getCurrentQuestions().length}
+                </p>
                 
-                <h4 style={{ fontSize: '1.2rem', marginBottom: '24px', color: '#1e293b' }}>{getOverallQuestions(role)[overallQuestionIndex].q}</h4>
+                <h4 style={{ fontSize: '1.2rem', marginBottom: '24px', color: '#1e293b' }}>
+                  {getCurrentQuestions()[overallQuestionIndex].q}
+                </h4>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {getOverallQuestions(role)[overallQuestionIndex].options.map((opt, idx) => (
+                  {getCurrentQuestions()[overallQuestionIndex].options.map((opt, idx) => (
                     <button 
                       key={idx}
                       onClick={() => handleOverallMCQAnswer(idx)}
@@ -462,7 +826,11 @@ const SkillRoadmap = () => {
                   <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#0f172a' }}>Prompt:</h4>
                   <p style={{ marginTop: '8px', marginBottom: 0, color: '#334155' }}>
                     {testPhase === 'overall-code' 
-                      ? 'Provide a robust code snippet demonstrating a core concept relevant to your selected role.'
+                      ? (activeSkill === 'professional' 
+                          ? `[PROFESSIONAL CHALLENGE]: Write a highly optimized, production-grade architectural design or advanced code snippet for a scalable ${role} feature.`
+                          : activeSkill === 'opentdb'
+                          ? `[TRIVIA BONUS]: Write a small "Hello World" or any cool snippet of code that shows off your passion for ${role}.`
+                          : `Provide a robust, production-ready code snippet demonstrating a core concept relevant to ${role}. (e.g., A custom React hook, a complete Express route with error handling, etc.)`)
                       : getSkillChallenge(activeSkill).code}
                   </p>
                 </div>
@@ -493,7 +861,7 @@ const SkillRoadmap = () => {
                 </motion.div>
                 <h3 style={{ fontSize: '1.8rem', marginBottom: '10px', color: '#0f172a' }}>Assessment Passed!</h3>
                 <p style={{ fontSize: '1.1rem', marginBottom: '24px', color: '#64748b' }}>
-                  Great job! You answered the MCQ correctly and successfully demonstrated your coding knowledge for <strong>{activeSkill === 'overall' ? role : activeSkill}</strong>.
+                  Great job! You answered the MCQ correctly and successfully demonstrated your coding knowledge for <strong>{activeSkill === 'overall' || activeSkill === 'professional' || activeSkill === 'opentdb' ? role : activeSkill}</strong>.
                 </p>
                 <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '30px' }}>
                   Your overall employability level has increased!

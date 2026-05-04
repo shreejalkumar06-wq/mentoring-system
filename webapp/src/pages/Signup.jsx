@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { api } from '../lib/api';
+import Spline3D from '../components/Spline3D';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -54,14 +55,29 @@ const Signup = () => {
   };
 
   return (
-    <motion.div 
-      className="container flex-center" 
-      style={{ minHeight: '100vh', paddingBottom: '100px' }}
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="glass-panel" style={{ padding: '40px', width: '100%', maxWidth: '500px' }}>
+    <>
+      <div 
+        style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: '100vw', 
+          height: '100vh', 
+          zIndex: 0,
+          pointerEvents: 'auto'
+        }}
+      >
+        <Spline3D scene="https://prod.spline.design/x8cqzwZl1E9AmRbz/scene.splinecode" />
+      </div>
+
+      <motion.div 
+        className="container flex-center" 
+        style={{ minHeight: '100vh', paddingBottom: '100px', position: 'relative', zIndex: 1, pointerEvents: 'none' }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="glass-panel" style={{ padding: '40px', width: '100%', maxWidth: '500px', pointerEvents: 'auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{mode === 'signup' ? 'Create Account' : 'Log In'}</h2>
           <p className="text-muted">Join the platform and start your journey.</p>
@@ -136,6 +152,7 @@ const Signup = () => {
         </div>
       </div>
     </motion.div>
+    </>
   );
 };
 
