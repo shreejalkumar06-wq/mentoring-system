@@ -12,19 +12,30 @@ const Dashboard = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!userData.id) return;
-    // Simulate dashboard fetch
-    setTimeout(() => {
-      setDashboard({
-        level: 'Beginner',
-        levelScore: 35,
-        skillGaps: ['Advanced React Hooks', 'System Design'],
-        breakdown: { codingScore: 40, quizScore: 30, projectScore: 0 },
-        progress: { attempts: 1, improvement: '+5%' }
-      });
-      setError('');
-    }, 500);
-  }, [userData.id]);
+    // We now rely on userData from the AppContext which is updated when tests are taken.
+    if (!userData.id && !userData.isLoggedIn) return;
+    
+    // Convert current level to a string
+    let levelString = 'Beginner';
+    if (userData.currentLevel > 1) levelString = 'Intermediate';
+    if (userData.currentLevel > 3) levelString = 'Advanced';
+
+    setDashboard({
+      level: levelString,
+      levelScore: userData.levelScore || 0,
+      skillGaps: userData.skillGaps || [],
+      breakdown: { 
+        codingScore: Math.floor((userData.levelScore || 0) * 0.6), 
+        quizScore: Math.floor((userData.levelScore || 0) * 0.4), 
+        projectScore: 0 
+      },
+      progress: { 
+        attempts: (userData.testScores?.length || 0), 
+        improvement: userData.levelScore > 0 ? '+5%' : '0%' 
+      }
+    });
+    setError('');
+  }, [userData]);
 
   const containerVariants = {
     hidden: { opacity: 0 },

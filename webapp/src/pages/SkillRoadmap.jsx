@@ -5,7 +5,7 @@ import { Play, Briefcase, ArrowRight, BookOpen, Trophy, ExternalLink, X, CheckCi
 import { useAppContext } from '../context/AppContext';
 
 const SkillRoadmap = () => {
-  const { userData } = useAppContext();
+  const { userData, updateUserData } = useAppContext();
   const [roadmap, setRoadmap] = useState(null);
   
   // Test State
@@ -384,7 +384,18 @@ const SkillRoadmap = () => {
       
       // Calculate final gaps based on MCQ and potential code evaluation.
       // We use the incorrect MCQ answers as our identified skill gaps.
-      setIdentifiedGaps([...new Set(incorrectAnswers)]);
+      const newGaps = [...new Set(incorrectAnswers)];
+      setIdentifiedGaps(newGaps);
+
+      // Update global context so the dashboard sees the new score and gaps
+      const currentScore = userData.levelScore || 0;
+      const currentLevel = userData.currentLevel || 1;
+      updateUserData({ 
+        currentLevel: currentLevel + 1,
+        levelScore: currentScore + 10, // Increase score by 10 points per passed test
+        skillGaps: newGaps,
+        testScores: [...(userData.testScores || []), { date: new Date().toISOString(), score: 10 }]
+      });
       
     }, 1500);
   };

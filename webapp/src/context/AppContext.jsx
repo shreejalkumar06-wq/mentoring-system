@@ -25,7 +25,9 @@ export const AppProvider = ({ children }) => {
       hasCompletedAssessment: false,
       isLoggedIn: false,
       currentLevel: 1,
-      testScores: []
+      testScores: [],
+      levelScore: 0,
+      skillGaps: []
     };
   });
 
@@ -52,7 +54,9 @@ export const AppProvider = ({ children }) => {
       hasCompletedAssessment: false,
       isLoggedIn: false,
       currentLevel: 1,
-      testScores: []
+      testScores: [],
+      levelScore: 0,
+      skillGaps: []
     });
   };
 
