@@ -502,23 +502,49 @@ const SkillRoadmap = () => {
           <span style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--text-main)' }}>{userLevel > 0 ? `${role} (Level ${userLevel})` : 'Current Path'}</span>
         </div>
         
-        {/* Progress Bar */}
-        <div style={{ maxWidth: '400px', margin: '0 auto 32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            <span>Level 0</span>
-            <span>Level 1</span>
-          </div>
-          <div style={{ height: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '5px', overflow: 'hidden' }}>
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: userLevel > 0 ? '100%' : '10%' }}
-              transition={{ duration: 1, delay: 0.5 }}
-              style={{ height: '100%', background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))' }}
-            />
-          </div>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '8px' }}>
-            {userLevel > 0 ? 'You have reached Level 1!' : 'Take a test to establish your baseline level'}
-          </p>
+        {/* Dynamic Skill Progress Bars */}
+        <div style={{ maxWidth: '500px', margin: '0 auto 32px' }}>
+          {(() => {
+            const roadmapPhases = getDetailedRoadmap(role).phases;
+            const currentPhase = roadmapPhases.find(p => p.level === userLevel) || roadmapPhases[roadmapPhases.length - 1];
+            const colors = [
+              'linear-gradient(90deg, #3b82f6, #60a5fa)', // Blue
+              'linear-gradient(90deg, #10b981, #34d399)', // Green
+              'linear-gradient(90deg, #f59e0b, #fbbf24)', // Orange
+              'linear-gradient(90deg, #8b5cf6, #a78bfa)', // Purple
+              'linear-gradient(90deg, #ec4899, #f472b6)', // Pink
+            ];
+
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }}>
+                <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', marginBottom: '4px', textAlign: 'center' }}>
+                  Skills required for {currentPhase.title}
+                </h3>
+                {currentPhase.skills.map((skill, idx) => {
+                  const isGap = identifiedGaps.includes(skill);
+                  // Generate visual progress: 100% if past level, low if it's a gap, or a baseline starting point
+                  const progress = userLevel > currentPhase.level ? 100 : (isGap ? 15 : (userLevel > 0 ? 40 : 10));
+                  
+                  return (
+                    <div key={idx}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.9rem' }}>
+                        <span style={{ fontWeight: '600', color: 'var(--text-main)' }}>{skill}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>{progress}%</span>
+                      </div>
+                      <div style={{ height: '12px', background: 'rgba(0,0,0,0.05)', borderRadius: '6px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)' }}>
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${progress}%` }}
+                          transition={{ duration: 1, delay: 0.2 + (idx * 0.1) }}
+                          style={{ height: '100%', background: colors[idx % colors.length] }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
         
         <p className="text-muted" style={{ maxWidth: '500px', margin: '0 auto 24px', fontSize: '1.05rem' }}>
