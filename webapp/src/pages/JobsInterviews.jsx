@@ -7,6 +7,8 @@ const JobsInterviews = () => {
   const { userData } = useAppContext();
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [matchedJobs, setMatchedJobs] = useState([]);
+  const [liveJobs, setLiveJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -20,9 +22,8 @@ const JobsInterviews = () => {
 
   const role = userData?.targetRole || 'Frontend Developer';
 
-
-  // Job Placements Data
-  const getPlacements = () => {
+  // Fallback Mock Job Placements Data
+  const getMockPlacements = () => {
     const allJobs = [
       { id: 101, company: 'TechFlow Innovations', position: 'Junior Frontend Engineer', location: 'Remote', salary: '₹6 LPA - ₹8 LPA', tags: ['Frontend Developer', 'Full Stack Developer'], logo: 'TF' },
       { id: 102, company: 'DataSphere Analytics', position: 'Data Science Intern', location: 'New Delhi, DL', salary: '₹20,000/mo', tags: ['Data Scientist'], logo: 'DS' },
@@ -34,6 +35,43 @@ const JobsInterviews = () => {
     const matched = allJobs.filter(job => job.tags.includes(role));
     return matched.length > 0 ? matched : allJobs.slice(0, 2);
   };
+
+  useEffect(() => {
+    const fetchLiveJobs = async () => {
+      setIsLoading(true);
+      try {
+        // We switched to Remotive API because it has no CORS issues and returns real live jobs instantly.
+        // It does not require an API key, so it won't fail or get blocked by Cloudflare.
+        const searchRole = encodeURIComponent(role);
+        const url = `https://remotive.com/api/remote-jobs?category=software-dev&search=${searchRole}&limit=10`;
+        
+        const response = await fetch(url);
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.jobs && data.jobs.length > 0) {
+            const formattedJobs = data.jobs.slice(0, 5).map((job) => ({
+              id: job.id,
+              company: job.company_name || 'Confidential',
+              position: job.title.replace(/<[^>]*>?/gm, ''), // strip HTML just in case
+              location: job.candidate_required_location || 'Remote',
+              salary: job.salary ? job.salary : 'Competitive',
+              logo: job.company_name ? job.company_name.slice(0, 2).toUpperCase() : 'RM',
+              link: job.url
+            }));
+            setLiveJobs(formattedJobs);
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch live jobs, falling back to mock data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLiveJobs();
+  }, [role]);
 
   // Mock Interview Questions Data
   const getInterviewQuestions = () => {
@@ -62,16 +100,20 @@ const JobsInterviews = () => {
     return questionsDB[role] || questionsDB['default'];
   };
 
-  const placements = matchedJobs.length
-    ? matchedJobs.map((job) => ({
-        id: job.id,
-        company: job.companyName,
-        position: job.role,
-        location: `${job.matchPercentage}% match`,
-        salary: job.salaryRange,
-        logo: job.companyName?.slice(0, 2).toUpperCase() || 'CO'
-      }))
-    : getPlacements();
+  // Determine what jobs to show: live API jobs, or matched state, or mock fallback
+  const placements = liveJobs.length > 0 ? liveJobs : (
+    matchedJobs.length
+      ? matchedJobs.map((job) => ({
+          id: job.id,
+          company: job.companyName,
+          position: job.role,
+          location: `${job.matchPercentage}% match`,
+          salary: job.salaryRange,
+          logo: job.companyName?.slice(0, 2).toUpperCase() || 'CO'
+        }))
+      : getMockPlacements()
+  );
+
   const questions = getInterviewQuestions();
 
   return (
@@ -115,8 +157,23 @@ const JobsInterviews = () => {
                   </div>
                 </div>
               </div>
-              <div>
-                <button className="btn btn-primary" style={{ padding: '10px 24px' }}>Apply Now</button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button 
+                  className="btn" 
+                  style={{ padding: '10px 16px', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
+                  onClick={() => {
+                    document.getElementById('mock-interview-section').scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  Mock Interview
+                </button>
+                <button 
+                  className="btn btn-primary" 
+                  style={{ padding: '10px 24px' }}
+                  onClick={() => window.open(job.link || '#', '_blank')}
+                >
+                  Apply Now
+                </button>
               </div>
             </motion.div>
           ))}
@@ -124,7 +181,7 @@ const JobsInterviews = () => {
       </motion.div>
 
       {/* Mock Interview Section */}
-      <motion.div variants={itemVariants}>
+      <motion.div variants={itemVariants} id="mock-interview-section">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
           <MessageSquare size={28} color="var(--accent-secondary)" />
           <h2 style={{ margin: 0, fontSize: '1.8rem' }}>Mock Interview Questions</h2>
