@@ -137,7 +137,7 @@ const Home = () => {
             variants={itemVariants} 
             style={{ flex: '1', minWidth: '300px', height: '500px', position: 'relative' }}
           >
-            <Spline3D />
+            <Spline3D scene="https://prod.spline.design/6SGiRaIfL7mkmyVu/scene.splinecode" />
           </motion.div>
         </div>
 
