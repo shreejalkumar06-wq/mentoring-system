@@ -520,6 +520,32 @@ const SkillRoadmap = () => {
                 <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', marginBottom: '4px', textAlign: 'center' }}>
                   Skills required for {currentPhase.title}
                 </h3>
+                
+                {/* Overall Progress Bar */}
+                {(() => {
+                  const allProgresses = currentPhase.skills.map(skill => {
+                    const isGap = identifiedGaps.includes(skill);
+                    return userLevel > currentPhase.level ? 100 : (isGap ? 15 : (userLevel > 0 ? 40 : 10));
+                  });
+                  const avgProgress = Math.round(allProgresses.reduce((a, b) => a + b, 0) / allProgresses.length);
+                  return (
+                    <div style={{ marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.9rem' }}>
+                        <span style={{ fontWeight: '700', color: 'var(--text-main)' }}>Overall Progress</span>
+                        <span style={{ color: 'var(--text-main)', fontWeight: '700' }}>{avgProgress}%</span>
+                      </div>
+                      <div style={{ height: '14px', background: 'rgba(0,0,0,0.08)', borderRadius: '7px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)' }}>
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${avgProgress}%` }}
+                          transition={{ duration: 1, delay: 0.1 }}
+                          style={{ height: '100%', background: 'linear-gradient(90deg, #1e293b, #475569)' }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {currentPhase.skills.map((skill, idx) => {
                   const isGap = identifiedGaps.includes(skill);
                   // Generate visual progress: 100% if past level, low if it's a gap, or a baseline starting point
